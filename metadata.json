@@ -1,0 +1,5 @@
+{
+  "name": "SiamSpeak Translator",
+  "description": "A high-fidelity English to Thai translation application featuring real-time neural translation and native-quality text-to-speech synthesis using Gemini 2.5 Flash.",
+  "requestFramePermissions": []
+}
