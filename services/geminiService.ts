@@ -1,22 +1,10 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 
-let apiKey = '';
-
-try {
-  // Safely attempt to access process.env to avoid ReferenceError in browser-only environments
-  // while strictly adhering to the instruction to use process.env.API_KEY.
-  if (typeof process !== 'undefined' && process.env) {
-    apiKey = process.env.API_KEY || '';
-  }
-} catch (e) {
-  console.warn("Could not access process.env. Ensure API_KEY is configured correctly in your environment.");
-}
-
-if (!apiKey) {
-  console.error("API Key is missing. Ensure process.env.API_KEY is set.");
-}
-
-const ai = new GoogleGenAI({ apiKey: apiKey });
+// Initialize Gemini AI client
+// We access process.env.API_KEY directly. 
+// In browser build environments (like Vite), this string is replaced at build time with the actual key.
+// The previous "typeof process" check prevented this replacement mechanism from working.
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export async function translateText(text: string): Promise<string> {
   if (!text.trim()) return "";
@@ -32,8 +20,8 @@ export async function translateText(text: string): Promise<string> {
 
     return response.text?.trim() || "";
   } catch (error) {
-    console.error("Translation error:", error);
-    throw new Error("Failed to translate text. Please check your API key and connection.");
+    console.error("Translation error details:", error);
+    throw error;
   }
 }
 
@@ -60,7 +48,7 @@ export async function generateSpeech(text: string): Promise<string> {
     }
     return audioData;
   } catch (error) {
-    console.error("TTS error:", error);
-    throw new Error("Failed to generate speech.");
+    console.error("TTS error details:", error);
+    throw error;
   }
 }

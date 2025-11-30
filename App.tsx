@@ -75,9 +75,13 @@ function App() {
         };
         return [newItem, ...prev].slice(0, MAX_HISTORY);
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      showToast('Translation failed. Please check your connection.', 'error');
+      const isApiKeyError = error.message?.includes('API Key') || error.message?.includes('400') || error.message?.includes('403');
+      const msg = isApiKeyError 
+        ? 'Configuration Error: Invalid or missing API Key.' 
+        : 'Translation failed. Please check your connection.';
+      showToast(msg, 'error');
     } finally {
       setLoadingState(LoadingState.IDLE);
     }
