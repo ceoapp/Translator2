@@ -94,9 +94,10 @@ function App() {
     }
 
     if (text.trim()) {
+      // Reduced to 500ms for a more "live" feeling
       debounceTimerRef.current = setTimeout(() => {
         handleTranslate(text);
-      }, 1000); // 1 second debounce
+      }, 500); 
     } else {
       setOutputText('');
     }
@@ -215,7 +216,7 @@ function App() {
              <button 
                onClick={handleManualTranslate}
                disabled={!inputText || loadingState === LoadingState.TRANSLATING}
-               className="bg-brand-600 hover:bg-brand-700 text-white p-3 rounded-full shadow-lg shadow-brand-500/30 transition-all disabled:opacity-50 disabled:shadow-none hover:scale-105 active:scale-95 group"
+               className="bg-brand-600 hover:bg-brand-700 text-white p-3 rounded-full shadow-lg shadow-brand-500/30 transition-all disabled:opacity-50 disabled:shadow-none hover:scale-105 active:scale-95 group touch-manipulation"
                aria-label="Translate now"
              >
                 {loadingState === LoadingState.TRANSLATING ? (

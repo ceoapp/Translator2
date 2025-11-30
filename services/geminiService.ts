@@ -1,12 +1,22 @@
 import { GoogleGenAI, Modality } from "@google/genai";
 
-const apiKey = process.env.API_KEY;
+let apiKey = '';
+
+try {
+  // Safely attempt to access process.env to avoid ReferenceError in browser-only environments
+  // while strictly adhering to the instruction to use process.env.API_KEY.
+  if (typeof process !== 'undefined' && process.env) {
+    apiKey = process.env.API_KEY || '';
+  }
+} catch (e) {
+  console.warn("Could not access process.env. Ensure API_KEY is configured correctly in your environment.");
+}
 
 if (!apiKey) {
   console.error("API Key is missing. Ensure process.env.API_KEY is set.");
 }
 
-const ai = new GoogleGenAI({ apiKey: apiKey || '' });
+const ai = new GoogleGenAI({ apiKey: apiKey });
 
 export async function translateText(text: string): Promise<string> {
   if (!text.trim()) return "";
@@ -23,7 +33,7 @@ export async function translateText(text: string): Promise<string> {
     return response.text?.trim() || "";
   } catch (error) {
     console.error("Translation error:", error);
-    throw new Error("Failed to translate text. Please try again.");
+    throw new Error("Failed to translate text. Please check your API key and connection.");
   }
 }
 
