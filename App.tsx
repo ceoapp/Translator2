@@ -32,8 +32,8 @@ function App() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
-  // Debounce ref - explicitly using number for browser compatibility
-  const debounceTimerRef = useRef<number | null>(null);
+  // Debounce ref - using ReturnType<typeof setTimeout> handles both Node and Browser environments gracefully
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Load history from local storage
   useEffect(() => {
@@ -88,13 +88,13 @@ function App() {
     const text = e.target.value;
     setInputText(text);
 
-    if (debounceTimerRef.current !== null) {
-      window.clearTimeout(debounceTimerRef.current);
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = null;
     }
 
     if (text.trim()) {
-      debounceTimerRef.current = window.setTimeout(() => {
+      debounceTimerRef.current = setTimeout(() => {
         handleTranslate(text);
       }, 1000); // 1 second debounce
     } else {
@@ -104,8 +104,8 @@ function App() {
 
   // Manual Translate Trigger
   const handleManualTranslate = () => {
-    if (debounceTimerRef.current !== null) {
-      window.clearTimeout(debounceTimerRef.current);
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = null;
     }
     handleTranslate(inputText);
@@ -142,8 +142,8 @@ function App() {
   const handleClear = () => {
     setInputText('');
     setOutputText('');
-    if (debounceTimerRef.current !== null) {
-      window.clearTimeout(debounceTimerRef.current);
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
       debounceTimerRef.current = null;
     }
   };
